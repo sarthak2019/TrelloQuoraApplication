@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Built-By: chaithanya_rc
+Build-Jdk: 11.0.2
+Implementation-Title: quora-api
+Implementation-Version: 1.0-SNAPSHOT
+Implementation-Vendor-Id: com.upgrad.quora
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-boot
+ -starter-parent/quora/quora-api
+Created-By: Maven Integration for Eclipse
+
