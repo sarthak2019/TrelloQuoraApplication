@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Propagation;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class QuestionBusinessService {
 
@@ -28,7 +30,13 @@ public class QuestionBusinessService {
         return questionDao.createQuestion(questionEntity);
     }
 
+   public List<QuestionEntity> getAllQuestion(UserAuthEntity userAuthEntity) throws AuthorizationFailedException{
 
+       if (userAuthEntity.getLogoutAt() != null) {
+           throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get all questions");
+       }
+       return questionDao.getAllQuestion();
+   }
 
 }
 
