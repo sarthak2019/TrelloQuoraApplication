@@ -48,6 +48,10 @@ public class QuestionDao {
         }
     }
 
+    public QuestionEntity editQuestion (QuestionEntity questionEntity){
+        entityManager.merge(questionEntity);
+        return questionEntity;
+    }
 
 
 
