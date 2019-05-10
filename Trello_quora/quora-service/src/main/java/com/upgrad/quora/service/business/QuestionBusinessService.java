@@ -6,6 +6,7 @@ import com.upgrad.quora.service.entity.UserAuthEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
+import com.upgrad.quora.service.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -58,6 +59,19 @@ public class QuestionBusinessService {
             throw new AuthorizationFailedException("ATHR-003", "Only the question owner or admin can delete the question");
         }
         return questionDao.deleteQuestion(questionEntity);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public List<QuestionEntity> getAllQuestionsByUser(String userId, UserAuthEntity userAuthEntity) throws AuthorizationFailedException, UserNotFoundException {
+
+        UserEntity userEntity = userAuthEntity.getUser();
+
+        if (userAuthEntity.getLogoutAt() != null) {
+            throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get all questions posted by a specific user");
+        }else if (!userEntity.getUuid().equals(userId)) {
+            throw new UserNotFoundException("USR-001", "User with entered uuid whose question details are to be seen does not exist");
+        }
+        return questionDao.getAllQuestionsByUser(userId);
     }
 
 

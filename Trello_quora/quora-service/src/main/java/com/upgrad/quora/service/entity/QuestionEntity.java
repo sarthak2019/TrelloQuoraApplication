@@ -10,8 +10,8 @@ import java.time.ZonedDateTime;
 @NamedQueries(
         {
                 @NamedQuery(name = "getAllQuestions" , query = "select q from QuestionEntity q"),
-                @NamedQuery(name = "questionByUuid", query = "select q from QuestionEntity q INNER JOIN UserEntity u on q.user = u.id where q.uuid =:questionId")
-
+                @NamedQuery(name = "questionByUuid", query = "select q from QuestionEntity q INNER JOIN UserEntity u on q.user = u.id where q.uuid =:questionId"),
+                @NamedQuery(name = "getAllQuestionsByUser", query = "select q from QuestionEntity q INNER JOIN UserEntity u on q.user = u.id where u.uuid =:uuid")
         }
 )
 
