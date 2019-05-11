@@ -46,4 +46,12 @@ public class AnswerDao {
             return null;
         }
     }
+
+    public List<AnswerEntity> getAllAnswers(final QuestionEntity questionEntity) {
+        try {
+            return entityManager.createNamedQuery("answerByQuestionId", AnswerEntity.class).setParameter("question", questionEntity).getResultList();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
 }

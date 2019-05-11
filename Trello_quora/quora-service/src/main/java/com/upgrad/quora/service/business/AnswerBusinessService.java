@@ -91,4 +91,23 @@ public class AnswerBusinessService {
         return answerDao.deleteAnswer(answerEntity);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
+    public List<AnswerEntity> getAllAnswersToQuestion(final String questionId, final String authorizationToken) throws AuthorizationFailedException, InvalidQuestionException {
+        QuestionEntity questionEntity = questionDao.getQuestion(questionId);
+        if (questionEntity == null) {
+            throw new InvalidQuestionException("QUES-001", "The question with entered uuid whose details are to be seen does not exist");
+        }
+        UserAuthTokenEntity userAuthTokenEntity = answerDao.getUserAuthToken(authorizationToken);
+        if (userAuthTokenEntity == null) {
+            throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+        }
+
+        if(userAuthTokenEntity.getLogoutAt() != null){
+            throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to delete an answer");
+        }
+        List<AnswerEntity> answerEntityList = answerDao.getAllAnswers(questionEntity);
+
+        return answerEntityList;
+    }
+
 }

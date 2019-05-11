@@ -72,4 +72,18 @@ public class AnswerController {
         return new ResponseEntity<AnswerResponse>(answerResponse, HttpStatus.OK);
     }
 
+    /* The endpoint "answer/all/{questionId}" is used to get all answers to a particular question.
+    Any user can access this endpoint. It throws AuthorizationFailedException and InvalidQuestionException. */
+    @RequestMapping(method = RequestMethod.GET, path = "answer/all/{questionId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<List<AnswerDetailsResponse>> getAllAnswersToQuestion  (@PathVariable("questionId") final String questionId, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, InvalidQuestionException {
+
+        final List<AnswerEntity> allAnswers = answerBusinessService.getAllAnswersToQuestion(questionId, authorization);
+        final List<AnswerDetailsResponse> allAnswerDetailsResponse = new ArrayList<AnswerDetailsResponse>();
+        for(AnswerEntity answerEntity : allAnswers) {
+            AnswerDetailsResponse answerDetailsResponse = new AnswerDetailsResponse().id(answerEntity.getUuid()).questionContent(answerEntity.getQuestion().getContent()).answerContent(answerEntity.getAns());
+            allAnswerDetailsResponse.add(answerDetailsResponse);
+        }
+        return new ResponseEntity<List<AnswerDetailsResponse>>(allAnswerDetailsResponse, HttpStatus.OK);
+    }
+
 }
