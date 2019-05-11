@@ -29,7 +29,7 @@ public class AnswerController {
 
 
     /* The endpoint "/question/{questionId}/answer/create" is used to  create an answer to a particular question.
-    Any user can access this endpoint. It throws InvalidQuestionException and AuthorizationFailedException.cd */
+    Any user can access this endpoint. It throws InvalidQuestionException and AuthorizationFailedException. */
     @RequestMapping(method = RequestMethod.POST, path = "/question/{questionId}/answer/create", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<AnswerResponse> createAnswer (@PathVariable("questionId") final String questionId, @RequestHeader("authorization") final String authorization, final AnswerRequest answerRequest) throws AuthorizationFailedException, InvalidQuestionException {
 
@@ -43,6 +43,22 @@ public class AnswerController {
         AnswerResponse answerResponse = new AnswerResponse().id(createdAnswer.getUuid()).status("ANSWER CREATED");
 
         return new ResponseEntity<AnswerResponse>(answerResponse, HttpStatus.CREATED);
+    }
+
+    /* The endpoint "/answer/edit/{answerId}" is used to edit an answer. Only the owner of the answer can edit the answer.
+    It throws AuthorizationFailedException and AnswerNotFoundException. */
+    @RequestMapping(method = RequestMethod.PUT, path = "/answer/edit/{answerId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<AnswerResponse> editAnswerContent  (@PathVariable("answerId") final String answerId, @RequestHeader("authorization") final String authorization, final AnswerEditRequest answerEditRequest) throws AuthorizationFailedException, AnswerNotFoundException {
+
+        final ZonedDateTime now = ZonedDateTime.now();
+        AnswerEntity answerEntity = new AnswerEntity();
+        answerEntity.setAns(answerEditRequest.getContent());
+        answerEntity.setDate(now);
+
+        final AnswerEntity editedAnswer = answerBusinessService.editAnswer(answerEntity , answerId, authorization);
+        AnswerResponse answerResponse = new AnswerResponse().id(editedAnswer.getUuid()).status("ANSWER EDITED");
+
+        return new ResponseEntity<AnswerResponse>(answerResponse, HttpStatus.OK);
     }
 
 }

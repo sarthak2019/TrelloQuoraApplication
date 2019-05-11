@@ -21,9 +21,22 @@ public class AnswerDao {
         return answerEntity;
     }
 
+    public AnswerEntity editAnswer(AnswerEntity answerEntity) {
+        entityManager.merge(answerEntity);
+        return answerEntity;
+    }
+
     public UserAuthTokenEntity getUserAuthToken(final String accesstoken) {
         try {
             return entityManager.createNamedQuery("userAuthTokenByAccessToken", UserAuthTokenEntity.class).setParameter("accessToken", accesstoken).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
+
+    public AnswerEntity getAnswer(final String answerId) {
+        try {
+            return entityManager.createNamedQuery("answerByUuid", AnswerEntity.class).setParameter("uuid", answerId).getSingleResult();
         } catch (NoResultException nre) {
             return null;
         }
