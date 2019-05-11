@@ -2,7 +2,6 @@ package com.upgrad.quora.service.dao;
 
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -11,35 +10,44 @@ import javax.persistence.PersistenceContext;
 
 @Repository
 public class UserDao {
+
     @PersistenceContext
     private EntityManager entityManager;
 
-    public UserEntity createUser(UserEntity userEntity) {
+    public UserEntity createUser(UserEntity userEntity){
+
         entityManager.persist(userEntity);
         return userEntity;
+
     }
 
-    public UserEntity getUser(final String userUuid) {
-        return entityManager.createNamedQuery("userByUuid", UserEntity.class).setParameter("uuid", userUuid).getSingleResult();
-    }
-    
-    public UserEntity getEmail(final String userUuid) {
-        return entityManager.createNamedQuery("userByEmail", UserEntity.class).setParameter("uuid", userUuid).getSingleResult();
-    }
-    
-    public UserAuthTokenEntity createAuthToken(final UserAuthTokenEntity userAuthTokenEntity){
-        entityManager.persist(userAuthTokenEntity);
-        return userAuthTokenEntity;
-    }
-
-    
-    public UserEntity getUserAuthToken(final String accessToken){
+    public UserEntity getUser(final String userUuid){
         try {
-            return entityManager.createNamedQuery("userAuthTokenByAccessToken", UserAuthTokenEntity.class)
-                    .setParameter("accessToken", accessToken).getSingleResult();
+            return entityManager.createNamedQuery("userByUuid", UserEntity.class).setParameter("uuid", userUuid).getSingleResult();
         }
-        catch (NoResultException nre){
+        catch(NoResultException nre){
             return null;
         }
     }
+
+    public UserEntity getUserByUsername(final String username){
+        try {
+            return entityManager.createNamedQuery("userByUsername", UserEntity.class).setParameter("username", username).getSingleResult();
+        }
+        catch(NoResultException nre){
+            return null;
+        }
+    }
+
+    public UserEntity getUserByEmail(final String email){
+        try {
+            return entityManager.createNamedQuery("userByEmail", UserEntity.class).setParameter("email", email).getSingleResult();
+        }
+        catch(NoResultException nre){
+            return null;
+        }
+    }
+
+    
+
 }

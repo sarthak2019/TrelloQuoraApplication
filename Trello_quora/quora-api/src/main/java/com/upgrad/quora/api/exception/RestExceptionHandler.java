@@ -1,10 +1,7 @@
 package com.upgrad.quora.api.exception;
 
-
 import com.upgrad.quora.api.model.ErrorResponse;
-import com.upgrad.quora.service.exception.AuthenticationFailedException;
-import com.upgrad.quora.service.exception.ResourceNotFoundException;
-import com.upgrad.quora.service.exception.UnauthorizedException;
+import com.upgrad.quora.service.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,22 +10,10 @@ import org.springframework.web.context.request.WebRequest;
 
 @ControllerAdvice
 public class RestExceptionHandler {
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> resourceNotFoundException(ResourceNotFoundException exe, WebRequest request){
-        return new ResponseEntity<ErrorResponse>(
-                new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()), HttpStatus.NOT_FOUND);
-    }
 
-    @ExceptionHandler(AuthenticationFailedException.class)
-    public ResponseEntity<ErrorResponse> authenticationFiledException(AuthenticationFailedException exe, WebRequest request){
+    @ExceptionHandler(SignUpRestrictedException.class)
+    public ResponseEntity<ErrorResponse> authenticationFiledException(SignUpRestrictedException exe, WebRequest request){
         return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()),
-                HttpStatus.NOT_FOUND);
+                HttpStatus.CONFLICT);
     }
-
-    @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ErrorResponse> unauthorizedException(UnauthorizedException exe, WebRequest request){
-        return new ResponseEntity<ErrorResponse>(
-                new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()), HttpStatus.UNAUTHORIZED);
-    }
-
 }

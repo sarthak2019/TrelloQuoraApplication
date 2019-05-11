@@ -15,7 +15,9 @@ import java.io.Serializable;
 @NamedQueries(
         {
                 @NamedQuery(name = "userByUuid", query = "select u from UserEntity u where u.uuid = :uuid"),
-                @NamedQuery(name = "userByEmail", query = "select u from UserEntity u where u.email =:email")
+                @NamedQuery(name = "userByEmail", query = "select u from UserEntity u where u.email =:email"),
+                @NamedQuery(name = "userByUsername", query = "select u from UserEntity u where u.username =:username")
+                
         }
 )
 
@@ -45,6 +47,10 @@ public class UserEntity implements Serializable {
     @NotNull
     @Size(max = 30)
     private String username;
+    
+    @OneToMany(mappedBy = "users")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<AnswerEntity> answers= new ArrayList<>();
     
     public Integer getId() {
 		return id;
