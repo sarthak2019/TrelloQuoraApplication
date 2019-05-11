@@ -52,5 +52,25 @@ public class UserController {
         SignupUserResponse userResponse = new SignupUserResponse().id(createdUserEntity.getUuid()).status("USER SUCCESSFULLY REGISTERED");
         return new ResponseEntity<SignupUserResponse>(userResponse, HttpStatus.CREATED);
     }
+    
+    @RequestMapping(method = RequestMethod.POST, path = "/user/signin", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<SigninResponse> signin(@RequestHeader("authorization") final String authorization) throws AuthenticationFailedException {
+        byte[] decode = Base64.getDecoder().decode(authorization.split("Basic: ")[1]);
+        String decodedText = new String(decode);
+        String[] decodeArray = decodedText.split(":");
 
+        UserAuthTokenEntity userAuthToken = authenticationService.authenticate(decodeArray[0], decodeArray[1]);
+        UserEntity user = userAuthToken.getUser();
+
+        SigninResponse signinResponse = new SigninResponse().id(user.getUuid()).message("SIGNED IN SUCCESSFULLY");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("access-token", userAuthToken.getAccessToken());
+
+        return new ResponseEntity<SigninResponse>(signinResponse, headers, HttpStatus.OK);
+    }
+    
+    
+    
+    
 }

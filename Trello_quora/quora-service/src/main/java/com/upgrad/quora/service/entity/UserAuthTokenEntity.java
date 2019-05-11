@@ -12,22 +12,21 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 
 @Entity
-@Table(name = "user_auth_tokens", schema = "public")
+@Table(name = "user_auth" , schema = "public")
 @NamedQueries({
-        @NamedQuery(name = "userAuthTokenByAccessToken" , query = "select ut from user_auth ut where ut.accessToken = :accessToken ")
+        @NamedQuery(name = "userAuthTokenByAccessToken", query = "select ut from UserAuthTokenEntity ut where ut.accessToken =:accessToken")
 })
 public class UserAuthTokenEntity implements Serializable {
-
 
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    
+
     @Column(name = "UUID")
-    //@NotNull
+    @NotNull
     @Size(max = 200)
-    private String uuId;
+    private String uuid;
 
     @ManyToOne
     @JoinColumn(name = "USER_ID")
@@ -48,21 +47,21 @@ public class UserAuthTokenEntity implements Serializable {
 
     @Column(name = "LOGOUT_AT")
     private ZonedDateTime logoutAt;
-    
+
     public Integer getId() {
         return id;
     }
 
-    public String getUuid() {
-		return uuId;
-	}
-
-	public void setUuid(String uuId) {
-		this.uuId = uuId;
-	}
-
-	public void setId(Integer id) {
+    public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public UserEntity getUser() {
@@ -106,13 +105,13 @@ public class UserAuthTokenEntity implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return new EqualsBuilder().append(this, obj).isEquals();
+    public int hashCode() {
+        return new HashCodeBuilder().append(this).hashCode();
     }
 
     @Override
-    public int hashCode() {
-        return new HashCodeBuilder().append(this).hashCode();
+    public boolean equals(Object obj) {
+        return new EqualsBuilder().append(this,obj).isEquals();
     }
 
     @Override

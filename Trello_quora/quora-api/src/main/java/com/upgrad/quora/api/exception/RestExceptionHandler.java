@@ -16,4 +16,42 @@ public class RestExceptionHandler {
         return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()),
                 HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(SignOutRestrictedException.class)
+    public ResponseEntity<ErrorResponse> authenticationFiledException(SignOutRestrictedException exe, WebRequest request){
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()),
+                HttpStatus.UNAUTHORIZED);
+    }
+
+    
+    @ExceptionHandler(AuthenticationFailedException.class)
+    public ResponseEntity<ErrorResponse> authenticationFiledException(AuthenticationFailedException exe, WebRequest request){
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()),
+                HttpStatus.UNAUTHORIZED);
+    }
+    
+    @ExceptionHandler(InvalidQuestionException.class)
+    public ResponseEntity<ErrorResponse> authenticationFiledException(InvalidQuestionException exe, WebRequest request){
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()),
+                HttpStatus.NOT_FOUND);
+    }
+    
+    @ExceptionHandler(AnswerNotFoundException.class)
+    public ResponseEntity<ErrorResponse> authenticationFiledException(AnswerNotFoundException exe, WebRequest request){
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()),
+                HttpStatus.NOT_FOUND);
+    }
+    
+    @ExceptionHandler(AuthorizationFailedException.class)
+    public ResponseEntity<ErrorResponse> authenticationFiledException(AuthorizationFailedException exe, WebRequest request){
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()),
+                HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> authenticationFiledException(UserNotFoundException exe, WebRequest request){
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()),
+                HttpStatus.NOT_FOUND);
+    }
+    
 }
