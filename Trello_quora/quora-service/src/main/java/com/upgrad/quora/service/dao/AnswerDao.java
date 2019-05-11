@@ -26,6 +26,11 @@ public class AnswerDao {
         return answerEntity;
     }
 
+    public AnswerEntity deleteAnswer(AnswerEntity answerEntity) {
+        entityManager.remove(answerEntity);
+        return answerEntity;
+    }
+
     public UserAuthTokenEntity getUserAuthToken(final String accesstoken) {
         try {
             return entityManager.createNamedQuery("userAuthTokenByAccessToken", UserAuthTokenEntity.class).setParameter("accessToken", accesstoken).getSingleResult();

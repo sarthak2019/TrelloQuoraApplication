@@ -59,7 +59,7 @@ public class AnswerBusinessService {
             throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to edit an answer");
         }
 
-        if(userAuthTokenEntity.getUser() != answerEntity1.getUser()){
+        if(userAuthTokenEntity.getUser() != answerEntity1.getUser()&&!(userAuthTokenEntity.getUser().getRole().equals("admin"))){
             throw new AuthorizationFailedException("ATHR-003", "Only the answer owner can edit the answer");
         }
         answerEntity.setUuid(answerEntity1.getUuid());
@@ -67,6 +67,28 @@ public class AnswerBusinessService {
         answerEntity.setQuestion(answerEntity1.getQuestion());
 
         return answerDao.editAnswer(answerEntity);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public AnswerEntity deleteAnswer(final String answerId, final String authorizationToken) throws AuthorizationFailedException, AnswerNotFoundException {
+        AnswerEntity answerEntity = answerDao.getAnswer(answerId);
+        if (answerEntity == null) {
+            throw new AnswerNotFoundException("ANS-001", "Entered answer uuid does not exist");
+        }
+        UserAuthTokenEntity userAuthTokenEntity = answerDao.getUserAuthToken(authorizationToken);
+        if (userAuthTokenEntity == null) {
+            throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+        }
+
+        if(userAuthTokenEntity.getLogoutAt() != null){
+            throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to delete an answer");
+        }
+
+        if(userAuthTokenEntity.getUser() != answerEntity.getUser()){
+            throw new AuthorizationFailedException("ATHR-003", "Only the answer owner or admin can delete the answer");
+        }
+
+        return answerDao.deleteAnswer(answerEntity);
     }
 
 }
