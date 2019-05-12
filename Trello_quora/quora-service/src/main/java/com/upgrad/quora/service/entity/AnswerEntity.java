@@ -1,4 +1,4 @@
-package entity;
+package com.upgrad.quora.service.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 @Table(name = "answer" , schema = "public")
 @NamedQueries(
         {
-                @NamedQuery(name = "answerByUuid", query = "select a from AnswerEntity a where a.uuid = :uuid"),
+                @NamedQuery(name = "answerByUuid", query = "select a from AnswerEntity a where a.uuid = :answerId"),
                 @NamedQuery(name = "answerByQuestionId", query = "select a from AnswerEntity a where a.question = :question")
         }
 )
@@ -35,7 +35,7 @@ public class AnswerEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "USER_ID")
-    private UserEntity user;
+    private UserEntity users;
 
     @ManyToOne
     @JoinColumn(name = "QUESTION_ID")
@@ -73,12 +73,12 @@ public class AnswerEntity implements Serializable {
         Date = date;
     }
 
-    public UserEntity getUser() {
-        return user;
+    public UserEntity getUsers() {
+        return users;
     }
 
-    public void setUser(UserEntity user) {
-        this.user = user;
+    public void setUsers(UserEntity users) {
+        this.users = users;
     }
 
     public QuestionEntity getQuestion() {

@@ -1,12 +1,14 @@
 package com.upgrad.quora.api.controller;
 
 import com.upgrad.quora.api.model.*;
+import com.upgrad.quora.service.business.AuthenticationService;
 import com.upgrad.quora.service.business.QuestionBusinessService;
-import com.upgrad.quora.service.business.UserAuthBusinessService;
+import com.upgrad.quora.service.entity.AnswerEntity;
 import com.upgrad.quora.service.entity.QuestionEntity;
-import com.upgrad.quora.service.entity.UserAuthEntity;
+import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
+import com.upgrad.quora.service.exception.SignOutRestrictedException;
 import com.upgrad.quora.service.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,32 +30,28 @@ public class QuestionController {
     private QuestionBusinessService questionBusinessService;
 
     @Autowired
-    private UserAuthBusinessService userAuthBusinessService;
+    private AuthenticationService userAuthBusinessService;
 
     @RequestMapping(method = RequestMethod.POST, path = "/question/create", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<QuestionResponse> createQuestion(@RequestHeader("authorization") final String authorization, final QuestionRequest questionRequest) throws AuthorizationFailedException {
-
-        final UserAuthEntity userAuthEntity = userAuthBusinessService.getUser(authorization);
-
+    public ResponseEntity<QuestionResponse> createQuestion(@RequestHeader("authorization") final String authorization, final QuestionRequest questionRequest) throws AuthorizationFailedException, SignOutRestrictedException {
 
         final ZonedDateTime now = ZonedDateTime.now();
         QuestionEntity questionEntity = new QuestionEntity();
         questionEntity.setUuid(UUID.randomUUID().toString());
         questionEntity.setContent(questionRequest.getContent());
-        questionEntity.setUser(userAuthEntity.getUser());
         questionEntity.setDate(now);
 
-        final QuestionEntity createdQuestion = questionBusinessService.createQuestion(questionEntity, userAuthEntity);
+        final QuestionEntity createdQuestion = questionBusinessService.createQuestion(questionEntity , authorization);
         QuestionResponse questionResponse = new QuestionResponse().id(createdQuestion.getUuid()).status("QUESTION CREATED");
 
         return new ResponseEntity<QuestionResponse>(questionResponse, HttpStatus.CREATED);
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/question/all", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<List<QuestionDetailsResponse>> GetAllQuestions(@RequestHeader("authorization") final String authorization) throws AuthorizationFailedException{
+    public ResponseEntity<List<QuestionDetailsResponse>> GetAllQuestions(@RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, SignOutRestrictedException{
 
-        final UserAuthEntity userAuthEntity = userAuthBusinessService.getUser(authorization);
-        final List<QuestionEntity> allQuestion = questionBusinessService.getAllQuestion(userAuthEntity);
+
+        final List<QuestionEntity> allQuestion = questionBusinessService.getAllQuestion(authorization);
 
         List<QuestionDetailsResponse> questionResponse = questionslist(allQuestion);
 
@@ -62,10 +60,9 @@ public class QuestionController {
 
     }
     @RequestMapping(method=RequestMethod.DELETE,path="/question/delete/{questionId}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<QuestionDeleteResponse>DeleteQuestion(@RequestHeader("authorization") final String authorization, @PathVariable("questionId") final String questionid) throws AuthorizationFailedException, InvalidQuestionException {
+    public ResponseEntity<QuestionDeleteResponse>DeleteQuestion(@RequestHeader("authorization") final String authorization, @PathVariable("questionId") final String questionid) throws AuthorizationFailedException, InvalidQuestionException, SignOutRestrictedException {
 
-        final UserAuthEntity userAuthEntity = userAuthBusinessService.getUser(authorization);
-        QuestionEntity deletedQuestion = questionBusinessService.deleteQuestion(questionid, userAuthEntity);
+        QuestionEntity deletedQuestion = questionBusinessService.deleteQuestion(questionid, authorization);
         QuestionDeleteResponse questionDeleteResponse = new QuestionDeleteResponse().id(deletedQuestion.getUuid()).status("QUESTION DELETED");
 
         return new ResponseEntity<QuestionDeleteResponse>(questionDeleteResponse, HttpStatus.OK);
@@ -73,24 +70,25 @@ public class QuestionController {
 
     @RequestMapping(method = RequestMethod.GET , path = "/question/all/{userId}" , produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<QuestionDetailsResponse>> getAllQuestionsByUser(@PathVariable("userId") final String userId, @RequestHeader("authorization") final String authorization )
-            throws AuthorizationFailedException , UserNotFoundException {
+            throws AuthorizationFailedException , UserNotFoundException, SignOutRestrictedException {
 
-        final UserAuthEntity userAuthEntity = userAuthBusinessService.getUser(authorization);
-
-        final List<QuestionEntity> allQuestionByUser = questionBusinessService.getAllQuestionsByUser(userId , userAuthEntity);
-
-        return new ResponseEntity<List<QuestionDetailsResponse>>(questionslist(allQuestionByUser), HttpStatus.OK);
-
+        final List<QuestionEntity> questionEntityList = questionBusinessService.getAllQuestionsByUser(userId, authorization);
+        final List<QuestionDetailsResponse> allQuestionDetailsResponse = new ArrayList<QuestionDetailsResponse>();
+        for(QuestionEntity questionEntity : questionEntityList) {
+            QuestionDetailsResponse questionDetailsResponse = new QuestionDetailsResponse().id(questionEntity.getUuid()).content(questionEntity.getContent());
+            allQuestionDetailsResponse.add(questionDetailsResponse);
+        }
+        return new ResponseEntity<List<QuestionDetailsResponse>>(allQuestionDetailsResponse, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.PUT , path = "/question/edit/{questionId}" ,consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
     public ResponseEntity<QuestionEditResponse> editQuestionContent(@PathVariable("questionId") final String questionId , @RequestHeader("authorization") final String authorization, QuestionEditRequest questionEditRequest)
-            throws AuthorizationFailedException,InvalidQuestionException {
+            throws AuthorizationFailedException, InvalidQuestionException, SignOutRestrictedException {
 
-        final UserAuthEntity userAuthEntity = userAuthBusinessService.getUser(authorization);
-        String content = questionEditRequest.getContent();
-
-        QuestionEntity editedQuestion = questionBusinessService.editQuestionContent(questionId,userAuthEntity, content);
+        QuestionEntity questionEntity = new QuestionEntity();
+        questionEntity.setContent(questionEditRequest.getContent());
+        questionEntity.setDate(ZonedDateTime.now());
+        QuestionEntity editedQuestion = questionBusinessService.editQuestionContent(questionId, authorization, questionEntity);
         QuestionEditResponse questionEditResponse = new QuestionEditResponse().id(editedQuestion.getUuid()).status("QUESTION EDITED");
 
         return new ResponseEntity<QuestionEditResponse>(questionEditResponse,HttpStatus.OK);

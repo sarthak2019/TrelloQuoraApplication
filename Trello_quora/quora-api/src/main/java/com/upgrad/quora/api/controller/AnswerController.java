@@ -65,7 +65,6 @@ public class AnswerController {
     or admin can delete an answer. It throws AuthorizationFailedException and AnswerNotFoundException. */
     @RequestMapping(method = RequestMethod.DELETE, path = "/answer/delete/{answerId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<AnswerResponse> deleteAnswer  (@PathVariable("answerId") final String answerId, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, AnswerNotFoundException {
-
         final AnswerEntity deletedAnswer = answerBusinessService.deleteAnswer(answerId, authorization);
         AnswerResponse answerResponse = new AnswerResponse().id(deletedAnswer.getUuid()).status("ANSWER DELETED");
 

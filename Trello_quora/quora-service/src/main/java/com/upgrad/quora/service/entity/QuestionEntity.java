@@ -1,17 +1,22 @@
 package com.upgrad.quora.service.entity;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "question" , schema = "public")
 @NamedQueries(
         {
-                @NamedQuery(name = "getAllQuestions" , query = "select q from QuestionEntity q"),
-                @NamedQuery(name = "questionByUuid", query = "select q from QuestionEntity q INNER JOIN UserEntity u on q.user = u.id where q.uuid =:questionId"),
-                @NamedQuery(name = "getAllQuestionsByUser", query = "select q from QuestionEntity q INNER JOIN UserEntity u on q.user = u.id where u.uuid =:uuid")
+                @NamedQuery(name = "allQuestions" , query = "select q from QuestionEntity q"),
+                @NamedQuery(name = "questionByUuid", query = "select q from QuestionEntity q where q.uuid =:questionId"),
+                @NamedQuery(name = "questionsByUser", query = "select q from QuestionEntity q where q.users =:users")
         }
 )
 
@@ -36,7 +41,11 @@ public class QuestionEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "USER_ID")
-    private UserEntity user;
+    private UserEntity users;
+
+    @OneToMany(mappedBy = "question")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<AnswerEntity> answer = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -70,11 +79,19 @@ public class QuestionEntity implements Serializable {
         Date = date;
     }
 
-    public UserEntity getUser() {
-        return user;
+    public UserEntity getUsers() {
+        return users;
     }
 
-    public void setUser(UserEntity user) {
-        this.user = user;
+    public void setUsers(UserEntity users) {
+        this.users = users;
+    }
+
+    public List<AnswerEntity> getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(List<AnswerEntity> answer) {
+        this.answer = answer;
     }
 }

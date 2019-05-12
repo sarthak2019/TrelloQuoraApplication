@@ -31,17 +31,17 @@ public class AnswerDao {
         return answerEntity;
     }
 
-    public UserAuthTokenEntity getUserAuthToken(final String accesstoken) {
+    public UserAuthTokenEntity getUserAuthToken(String accessToken) {
         try {
-            return entityManager.createNamedQuery("userAuthTokenByAccessToken", UserAuthTokenEntity.class).setParameter("accessToken", accesstoken).getSingleResult();
+            return entityManager.createNamedQuery("userAuthTokenByAccessToken", UserAuthTokenEntity.class).setParameter("accessToken", accessToken).getSingleResult();
         } catch (NoResultException nre) {
             return null;
         }
     }
 
-    public AnswerEntity getAnswer(final String answerId) {
+    public AnswerEntity getAnswer(String answerId) {
         try {
-            return entityManager.createNamedQuery("answerByUuid", AnswerEntity.class).setParameter("uuid", answerId).getSingleResult();
+            return entityManager.createNamedQuery("answerByUuid", AnswerEntity.class).setParameter("answerId", answerId).getSingleResult();
         } catch (NoResultException nre) {
             return null;
         }

@@ -7,6 +7,8 @@ import com.upgrad.quora.service.business.SignoutBusinessService;
 import com.upgrad.quora.service.business.SignupBusinessService;
 import com.upgrad.quora.api.model.SignupUserRequest;
 import com.upgrad.quora.api.model.SignupUserResponse;
+//import com.upgrad.quora.service.business.SignupBusinessService;
+//import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthenticationFailedException;
@@ -32,6 +34,12 @@ public class UserController {
     @Autowired
     private SignupBusinessService signupBusinessService;
 
+    @Autowired
+    private AuthenticationService authenticationService;
+
+    @Autowired
+    private SignoutBusinessService signoutBusinessService;
+
     @RequestMapping(method = RequestMethod.POST, path = "/user/signup", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SignupUserResponse> signup(final SignupUserRequest signupUserRequest) throws SignUpRestrictedException {
         final UserEntity userEntity = new UserEntity();
@@ -52,7 +60,7 @@ public class UserController {
         SignupUserResponse userResponse = new SignupUserResponse().id(createdUserEntity.getUuid()).status("USER SUCCESSFULLY REGISTERED");
         return new ResponseEntity<SignupUserResponse>(userResponse, HttpStatus.CREATED);
     }
-    
+
     @RequestMapping(method = RequestMethod.POST, path = "/user/signin", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SigninResponse> signin(@RequestHeader("authorization") final String authorization) throws AuthenticationFailedException {
         byte[] decode = Base64.getDecoder().decode(authorization.split("Basic: ")[1]);
@@ -69,7 +77,7 @@ public class UserController {
 
         return new ResponseEntity<SigninResponse>(signinResponse, headers, HttpStatus.OK);
     }
-    
+
     @RequestMapping(method = RequestMethod.POST, path = "/user/signout", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SignoutResponse> signout(@RequestHeader("authorization") final String authorization) throws SignOutRestrictedException {
 
@@ -80,4 +88,5 @@ public class UserController {
 
         return new ResponseEntity<SignoutResponse>(signoutResponse, HttpStatus.OK);
     }
+
 }

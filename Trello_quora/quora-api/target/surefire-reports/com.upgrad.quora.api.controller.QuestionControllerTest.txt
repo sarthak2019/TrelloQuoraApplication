@@ -1,0 +1,30 @@
+-------------------------------------------------------------------------------
+Test set: com.upgrad.quora.api.controller.QuestionControllerTest
+-------------------------------------------------------------------------------
+Tests run: 16, Failures: 5, Errors: 1, Skipped: 0, Time elapsed: 3.904 s <<< FAILURE! - in com.upgrad.quora.api.controller.QuestionControllerTest
+getAllQuestionsByUserWithNonExistingAccessToken(com.upgrad.quora.api.controller.QuestionControllerTest)  Time elapsed: 0.556 s  <<< FAILURE!
+java.lang.AssertionError: Status expected:<403> but was:<401>
+	at com.upgrad.quora.api.controller.QuestionControllerTest.getAllQuestionsByUserWithNonExistingAccessToken(QuestionControllerTest.java:135)
+
+getAllQuestionsForNonExistingUser(com.upgrad.quora.api.controller.QuestionControllerTest)  Time elapsed: 0.573 s  <<< FAILURE!
+java.lang.AssertionError: JSON path "code" expected:<USR-001> but was:<QUES-001>
+	at com.upgrad.quora.api.controller.QuestionControllerTest.getAllQuestionsForNonExistingUser(QuestionControllerTest.java:152)
+
+createQuestionWithNonExistingAccessToken(com.upgrad.quora.api.controller.QuestionControllerTest)  Time elapsed: 0.614 s  <<< FAILURE!
+java.lang.AssertionError: Status expected:<403> but was:<401>
+	at com.upgrad.quora.api.controller.QuestionControllerTest.createQuestionWithNonExistingAccessToken(QuestionControllerTest.java:31)
+
+editQuestionWithNonExistingAccessToken(com.upgrad.quora.api.controller.QuestionControllerTest)  Time elapsed: 0.622 s  <<< FAILURE!
+java.lang.AssertionError: Status expected:<403> but was:<401>
+	at com.upgrad.quora.api.controller.QuestionControllerTest.editQuestionWithNonExistingAccessToken(QuestionControllerTest.java:70)
+
+deleteQuestionWithNonExistingAccessToken(com.upgrad.quora.api.controller.QuestionControllerTest)  Time elapsed: 0.712 s  <<< ERROR!
+org.springframework.web.util.NestedServletException: Request processing failed; nested exception is java.lang.NullPointerException
+	at com.upgrad.quora.api.controller.QuestionControllerTest.deleteQuestionWithNonExistingAccessToken(QuestionControllerTest.java:101)
+Caused by: java.lang.NullPointerException
+	at com.upgrad.quora.api.controller.QuestionControllerTest.deleteQuestionWithNonExistingAccessToken(QuestionControllerTest.java:101)
+
+getAllQuestionsWithNonExistingAccessToken(com.upgrad.quora.api.controller.QuestionControllerTest)  Time elapsed: 0.762 s  <<< FAILURE!
+java.lang.AssertionError: Status expected:<403> but was:<401>
+	at com.upgrad.quora.api.controller.QuestionControllerTest.getAllQuestionsWithNonExistingAccessToken(QuestionControllerTest.java:54)
+
