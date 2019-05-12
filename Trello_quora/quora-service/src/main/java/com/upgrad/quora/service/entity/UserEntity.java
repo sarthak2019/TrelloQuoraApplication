@@ -88,11 +88,11 @@ public class UserEntity implements Serializable {
 
     @OneToMany(mappedBy = "users")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<QuestionEntity> question = new ArrayList<>();
+    private List<QuestionEntity> question;
 
     @OneToMany(mappedBy = "users")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<AnswerEntity> answer= new ArrayList<>();
+    private List<AnswerEntity> answer;
 
     public Integer getId() {
         return id;

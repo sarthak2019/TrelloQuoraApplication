@@ -34,11 +34,11 @@ public class AnswerEntity implements Serializable {
     private ZonedDateTime Date;
 
     @ManyToOne
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name="USER_ID")
     private UserEntity users;
 
     @ManyToOne
-    @JoinColumn(name = "QUESTION_ID")
+    @JoinColumn(name="QUESTION_ID")
     private QuestionEntity question;
 
     public Integer getId() {

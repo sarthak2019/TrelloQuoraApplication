@@ -38,6 +38,7 @@ public class QuestionBusinessService {
         if (userAuthTokenEntity.getLogoutAt() != null) {
             throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to post a question");
         }
+        questionEntity.setUsers(userAuthTokenEntity.getUser());
         return questionDao.createQuestion(questionEntity);
     }
 

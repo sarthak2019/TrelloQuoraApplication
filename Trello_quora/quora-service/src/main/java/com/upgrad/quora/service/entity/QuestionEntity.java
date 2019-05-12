@@ -40,12 +40,12 @@ public class QuestionEntity implements Serializable {
     private ZonedDateTime Date;
 
     @ManyToOne
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name="USER_ID")
     private UserEntity users;
 
     @OneToMany(mappedBy = "question")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<AnswerEntity> answer = new ArrayList<>();
+    private List<AnswerEntity> answer;
 
     public Integer getId() {
         return id;
@@ -79,19 +79,19 @@ public class QuestionEntity implements Serializable {
         Date = date;
     }
 
-    public UserEntity getUsers() {
-        return users;
-    }
-
-    public void setUsers(UserEntity users) {
-        this.users = users;
-    }
-
     public List<AnswerEntity> getAnswer() {
         return answer;
     }
 
     public void setAnswer(List<AnswerEntity> answer) {
         this.answer = answer;
+    }
+
+    public UserEntity getUsers() {
+        return users;
+    }
+
+    public void setUsers(UserEntity users) {
+        this.users = users;
     }
 }
