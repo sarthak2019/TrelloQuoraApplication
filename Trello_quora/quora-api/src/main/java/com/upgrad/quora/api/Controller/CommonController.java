@@ -35,5 +35,6 @@ public class CommonController {
                 .country(userEntity.getCountry()).userName(userEntity.getUsername());
 
         return new ResponseEntity<UserDetailsResponse>(userDetailsResponse, HttpStatus.OK);
+        
     }
 }
