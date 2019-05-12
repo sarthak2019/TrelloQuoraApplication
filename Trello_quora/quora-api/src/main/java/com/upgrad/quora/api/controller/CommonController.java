@@ -1,9 +1,9 @@
-package com.upgrad.quora.api.Controller;
+package com.upgrad.quora.api.controller;
 
 import com.upgrad.quora.api.model.UserDetailsResponse;
-import com.upgrad.quora.service.business.UserAuthBusinessService;
-import com.upgrad.quora.service.business.UserBusinessService;
-import com.upgrad.quora.service.entity.UserAuthEntity;
+import com.upgrad.quora.service.business.AuthenticationService;
+import com.upgrad.quora.service.business.CommonBusinessService;
+import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.UserNotFoundException;
@@ -18,20 +18,22 @@ import org.springframework.web.bind.annotation.*;
 public class CommonController {
 
     @Autowired
-    private UserBusinessService userBusinessService;
+    private UserDao userDao;
 
     @Autowired
-    private UserAuthBusinessService userAuthBusinessService;
+    private AuthenticationService authenticationService;
+
+    @Autowired
+    private CommonBusinessService commonBusinessService;
 
     @RequestMapping(method = RequestMethod.GET, path = "/userprofile/{userId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<UserDetailsResponse> userProfile(@PathVariable("userId") final String uuid,
+    public ResponseEntity<UserDetailsResponse> userProfile(@PathVariable("userId") final String userId,
                                                            @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, UserNotFoundException {
-        final UserAuthEntity userAuthEntity = userAuthBusinessService.getUser(authorization);
-        UserEntity userEntity = userBusinessService.userProfile(uuid,userAuthEntity);
+        UserEntity userEntity = commonBusinessService.userProfile(userId, authorization);
 
-        UserDetailsResponse userDetailsResponse = new UserDetailsResponse().firstName(userEntity.getFirstname())
-                .lastName(userEntity.getLastname()).emailAddress(userEntity.getEmail())
-                .contactNumber(userEntity.getMobile()).dob(userEntity.getDob()).aboutMe(userEntity.getAboutme())
+        UserDetailsResponse userDetailsResponse = new UserDetailsResponse().firstName(userEntity.getFirstName())
+                .lastName(userEntity.getLastName()).emailAddress(userEntity.getEmail())
+                .contactNumber(userEntity.getContactNumber()).dob(userEntity.getDob()).aboutMe(userEntity.getAboutMe())
                 .country(userEntity.getCountry()).userName(userEntity.getUsername());
 
         return new ResponseEntity<UserDetailsResponse>(userDetailsResponse, HttpStatus.OK);
