@@ -62,7 +62,7 @@ public class AnswerBusinessService {
         if (answerEntity1 == null) {
             throw new AnswerNotFoundException("ANS-001", "Entered answer uuid does not exist");
         }
-        if(userAuthTokenEntity.getUser().getId() != answerEntity1.getUsers().getId()&&!(userAuthTokenEntity.getUser().getRole().equals("admin"))){
+        if(userAuthTokenEntity.getUser().getId() != answerEntity1.getUsers().getId()){
             throw new AuthorizationFailedException("ATHR-003", "Only the answer owner can edit the answer");
         }
         answerEntity.setUuid(answerEntity1.getUuid());
