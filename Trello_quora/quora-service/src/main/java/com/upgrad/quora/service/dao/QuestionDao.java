@@ -43,7 +43,7 @@ public class QuestionDao {
 
     public List<QuestionEntity> getAllQuestionsByUser(UserEntity user){
         try {
-            return entityManager.createNamedQuery("questionsByUser", QuestionEntity.class).setParameter("user", user).getResultList();
+            return entityManager.createNamedQuery("questionsByUser", QuestionEntity.class).setParameter("users", user).getResultList();
         } catch (NoResultException nre){
             return null;
         }

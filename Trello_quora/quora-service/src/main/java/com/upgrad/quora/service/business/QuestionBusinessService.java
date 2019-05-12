@@ -110,6 +110,7 @@ public class QuestionBusinessService {
             throw new AuthorizationFailedException("ATHR-003", "Only the question owner can edit the question");
         }
         questionEntity.setUuid(questionEntity1.getUuid());
+        questionEntity.setUsers(questionEntity1.getUsers());
         return  questionDao.editQuestion(questionEntity);
     }
 
