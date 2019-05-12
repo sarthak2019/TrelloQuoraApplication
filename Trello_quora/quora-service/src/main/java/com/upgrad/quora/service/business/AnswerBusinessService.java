@@ -65,6 +65,7 @@ public class AnswerBusinessService {
         if(userAuthTokenEntity.getUser().getId() != answerEntity1.getUsers().getId()){
             throw new AuthorizationFailedException("ATHR-003", "Only the answer owner can edit the answer");
         }
+        answerEntity.setId(answerEntity1.getId());
         answerEntity.setUuid(answerEntity1.getUuid());
         answerEntity.setUsers(answerEntity1.getUsers());
         answerEntity.setQuestion(answerEntity1.getQuestion());
